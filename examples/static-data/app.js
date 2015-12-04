@@ -5,7 +5,7 @@ import Autocomplete from '../../lib/index'
 let App = React.createClass({
   render () {
     return (
-      <div>
+      <div style={{width:'500px'}}>
         <h1>Basic Example with Static Data</h1>
 
         <p>

@@ -95,12 +95,12 @@ export function getStates() {
     { abbr: "WI", name: "Wisconsin"},
     { abbr: "WY", name: "Wyoming"}
   ];
-  /*for (var x = 0 ; x < 2000 ; x ++){
+  for (var x = 0 ; x < 1000 ; x ++){
     all.push({
         abbr: '1'+Math.random().toString(),
         name: '1'+Math.random().toString()
     })
-  }*/
+  }
   return all
 }
 
