@@ -43,7 +43,7 @@ export function fakeRequest (value, cb) {
 }
 
 export function getStates() {
-  return [
+  var all = [
     { abbr: "AL", name: "Alabama"},
     { abbr: "AK", name: "Alaska"},
     { abbr: "AZ", name: "Arizona"},
@@ -94,7 +94,14 @@ export function getStates() {
     { abbr: "WV", name: "West Virginia"},
     { abbr: "WI", name: "Wisconsin"},
     { abbr: "WY", name: "Wyoming"}
-  ]
+  ];
+  /*for (var x = 0 ; x < 2000 ; x ++){
+    all.push({
+        abbr: '1'+Math.random().toString(),
+        name: '1'+Math.random().toString()
+    })
+  }*/
+  return all
 }
 
 
