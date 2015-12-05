@@ -77,7 +77,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var scrollIntoView = __webpack_require__(3);
 	
-	var _debugStates = [];
+	function isServer() {
+	  return !(typeof window != 'undefined' && window.document);
+	}
+	var Loader = null;
+	if (!isServer()) {
+	  Loader = __webpack_require__(6);
+	}
+	
+	//let _debugStates = [];
 	
 	var Autocomplete = React.createClass({
 	  displayName: 'Autocomplete',
@@ -92,7 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    menuStyle: React.PropTypes.object,
 	    wrapperProps: React.PropTypes.object,
 	    wrapperStyle: React.PropTypes.object,
-	    minInput: React.PropTypes.object,
+	    minInput: React.PropTypes.any,
 	    inputProps: React.PropTypes.object
 	  },
 	
@@ -343,7 +351,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this6 = this;
 	
 	    var items = this.getFilteredItems().map(function (item, index) {
-	      console.log(index);
 	      var element = _this6.props.renderItem(item, _this6.state.highlightedIndex === index, { cursor: 'default' });
 	      return React.cloneElement(element, {
 	        onMouseDown: function onMouseDown() {
@@ -401,14 +408,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    var _this8 = this;
 	
-	    console.log('rendering - value = ' + JSON.stringify(this.state));
+	    //var __CLIENT__ = __CLIENT__;
+	    //  console.log(<Loader/>)
+	    /* if (!Loader){
+	         Loader = <div>hello</div>
+	     } else {
+	         Loader =  <Loader color="#26A65B" size="13px" />
+	     }*/
 	    /*if (this.props.debug) { // you don't like it, you love it
 	      _debugStates.push({
 	        id: _debugStates.length,
 	        state: this.state
 	      })
 	    }*/
-	    return React.createElement('div', _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }), React.createElement('input', _extends({}, this.props.inputProps, {
+	
+	    //var wrapperStyle = Object.assign(this.props.wrapperStyle,{display:'table'});
+	    var wrapperStyle = this.props.wrapperStyle;
+	    wrapperStyle.display = 'table';
+	    return React.createElement('div', _extends({}, this.props.wrapperProps, { style: _extends({}, wrapperStyle) }), React.createElement('input', _extends({}, this.props.inputProps, {
+	      //  style={Object.assign(this.props.inputProps.style,{display:'inline-block'})}
 	      role: 'combobox',
 	      'aria-autocomplete': 'both',
 	      ref: 'input',
@@ -427,11 +445,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      onClick: this.handleInputClick,
 	      value: this.state.value
-	    })), this.state.isOpen && !!this.getFilteredItems().length && this.renderMenu());
+	    })), this.state.isOpen && !!this.getFilteredItems().length && this.renderMenu(), React.createElement('span', { style: { position: 'relative', display: 'table-cell' } }, React.createElement('div', { style: { position: 'absolute',
+	        left: '-35px', top: '6px',
+	        padding: '0px',
+	        //   backgroundColor:'#196177',
+	        width: '30x',
+	        height: '30px',
+	        zIndex: '10'
+	        //   background:"url('./ajax-loader.gif') no-repeat",
+	        //    backgroundPosition: '50% 50%'
+	      } }, !isServer() ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null)));
 	  }
 	});
 	
 	module.exports = Autocomplete;
+	
+	//<Loader color="#26A65B" size="13px" />
+	/*
+
+
+	.my-combobox.small-loading{
+
+	    background-color: #196177;
+	    background:url('/resources/stylesheets/images/ajax-loader.gif') no-repeat ;
+	    background-position: 50% 50%;
+
+	}*/
 	/*this.state.isOpen && this.renderMenu()*/ /*this.props.debug && (
 	                                            <pre style={{marginLeft: 300}}>
 	                                              {JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)}
@@ -1014,6 +1053,316 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	mix(utils, domUtils);
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	var assign = __webpack_require__(7);
+	var insertKeyframesRule = __webpack_require__(10);
+	
+	/**
+	 * @type {Object}
+	 */
+	var keyframes = {
+	    '0%': {
+	        transform: 'rotate(0deg) scale(1)'
+	    },
+	    '50%': {
+	        transform: 'rotate(180deg) scale(0.8)'
+	    },
+	    '100%': {
+	        transform: 'rotate(360deg) scale(1)'
+	    }
+	};
+	
+	/**
+	 * @type {String}
+	 */
+	var animationName = insertKeyframesRule(keyframes);
+	
+	var Loader = React.createClass({displayName: "Loader",
+	    /**
+	     * @type {Object}
+	     */
+	    propTypes: {
+	        loading: React.PropTypes.bool,
+	        color: React.PropTypes.string,
+	        size: React.PropTypes.string
+	    },
+	
+	    /**
+	     * @return {Object}
+	     */
+	    getDefaultProps: function() {
+	        return {
+	            loading: true,
+	            color: '#ffffff',
+	            size: '35px'
+	        };
+	    },
+	
+	    /**
+	     * @return {Object}
+	     */
+	    getBallStyle: function() {
+	        return {
+	            width: this.props.size,
+	            height: this.props.size,
+	            border: '2px solid',
+	            borderColor: this.props.color,
+	            borderBottomColor: 'transparent',
+	            borderRadius: '100%',
+	            background: 'transparent !important'
+	        };
+	    },
+	
+	    /**
+	     * @param  {Number} i
+	     * @return {Object}
+	     */
+	    getAnimationStyle: function(i) {
+	        var animation = [animationName, '0.75s', '0s', 'infinite', 'linear'].join(' ');
+	        var animationFillMode = 'both';
+	
+	        return {
+	            animation: animation,
+	            animationFillMode: animationFillMode
+	        };
+	    },
+	
+	    /**
+	     * @param  {Number} i
+	     * @return {Object}
+	     */
+	    getStyle: function(i) {
+	        return assign(
+	            this.getBallStyle(i),
+	            this.getAnimationStyle(i),
+	            {
+	                display: 'inline-block'
+	            }
+	        );
+	    },
+	
+	    /**
+	     * @param  {Boolean} loading
+	     * @return {ReactComponent || null}
+	     */
+	    renderLoader: function(loading) {
+	        if (loading) {
+	            return (
+	                React.createElement("div", {id: this.props.id, className: this.props.className}, 
+	                    React.createElement("div", {style: this.getStyle()})
+	                )
+	            );
+	        }
+	
+	        return null;
+	    },
+	
+	    render: function() {
+	        return this.renderLoader(this.props.loading);
+	    }
+	});
+	
+	module.exports = Loader;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var getVendorPropertyName = __webpack_require__(8);
+	
+	module.exports = function(target, sources) {
+	  var to = Object(target);
+	  var hasOwnProperty = Object.prototype.hasOwnProperty;
+	
+	  for (var nextIndex = 1; nextIndex < arguments.length; nextIndex++) {
+	    var nextSource = arguments[nextIndex];
+	    if (nextSource == null) {
+	      continue;
+	    }
+	
+	    var from = Object(nextSource);
+	
+	    for (var key in from) {
+	      if (hasOwnProperty.call(from, key)) {
+	        to[key] = from[key];
+	      }
+	    }
+	  }
+	
+	  var prefixed = {};
+	  for (var key in to) {
+	    prefixed[getVendorPropertyName(key)] = to[key]
+	  }
+	
+	  return prefixed
+	}
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var builtinStyle = __webpack_require__(9);
+	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+	var domVendorPrefix;
+	
+	// 2009 spec only
+	var flexbox = {
+	  flex: ['WebkitFlex', 'WebkitBoxFlex'],
+	  order: ['WebkitOrder','WebkitBoxOrdinalGroup'],
+	  // https://github.com/postcss/autoprefixer/blob/master/lib/hacks/flex-direction.coffee
+	  flexDirection: ['WebkitFlexDirection', 'WebkitBoxOrient', 'WebkitBoxDirection'],
+	  // https://github.com/postcss/autoprefixer/blob/master/lib/hacks/align-items.coffee
+	  alignItems: ['WebkitAlignItems', 'WebkitBoxAlign'],
+	  // https://github.com/postcss/autoprefixer/blob/master/lib/hacks/justify-content.coffee
+	  justifyContent: ['WebkitJustifyContent', 'WebkitBoxPack'],
+	  flexWrap: ['WebkitFlexWrap'],
+	  alignSelf: ['WebkitAlignSelf'],
+	}
+	
+	// Helper function to get the proper vendor property name. (transition => WebkitTransition)
+	module.exports = function(prop, isSupportTest) {
+	
+	  var vendorProp;
+	  if (prop in builtinStyle) return prop;
+	
+	  if(flexbox[prop]){
+	    // TODO: cache the result
+	    var flexProperties = flexbox[prop];
+	    for (var i = 0; i < flexProperties.length; ++i) {
+	      if (flexProperties[i] in builtinStyle) {
+	        return flexProperties[i];
+	      }
+	    }
+	
+	  }else{
+	
+	    var UpperProp = prop.charAt(0).toUpperCase() + prop.substr(1);
+	
+	    if (domVendorPrefix) {
+	
+	      vendorProp = domVendorPrefix + UpperProp;
+	      if (vendorProp in builtinStyle) {
+	        return vendorProp;
+	      }
+	    } else {
+	
+	      for (var i = 0; i < prefixes.length; ++i) {
+	        vendorProp = prefixes[i] + UpperProp;
+	        if (vendorProp in builtinStyle) {
+	          domVendorPrefix = prefixes[i];
+	          return vendorProp;
+	        }
+	      }
+	    }
+	  }
+	
+	  // if support test, not fallback to origin prop name
+	  if (!isSupportTest) {
+	    return prop;
+	  }
+	
+	}
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = document.createElement('div').style;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var insertRule = __webpack_require__(11);
+	var vendorPrefix = __webpack_require__(12)();
+	var index = 0;
+	
+	module.exports = function(keyframes) {
+	  // random name
+	  var name = 'anim_' + (++index) + (+new Date);
+	  var css = "@" + vendorPrefix + "keyframes " + name + " {";
+	
+	  for (var key in keyframes) {
+	    css += key + " {";
+	
+	    for (var property in keyframes[key]) {
+	      var part = ":" + keyframes[key][property] + ";";
+	      // We do vendor prefix for every property
+	      css += vendorPrefix + property + part;
+	      css += property + part;
+	    }
+	
+	    css += "}";
+	  }
+	
+	  css += "}";
+	
+	  insertRule(css);
+	
+	  return name
+	}
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var extraSheet;
+	
+	module.exports = function(css) {
+	
+	  if (!extraSheet) {
+	    // First time, create an extra stylesheet for adding rules
+	    extraSheet = document.createElement('style');
+	    document.getElementsByTagName('head')[0].appendChild(extraSheet);
+	    // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
+	    extraSheet = extraSheet.sheet || extraSheet.styleSheet;
+	  }
+	
+	  var index = (extraSheet.cssRules || extraSheet.rules).length;
+	  extraSheet.insertRule(css, index);
+	
+	  return extraSheet;
+	}
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var cssVendorPrefix;
+	
+	module.exports = function() {
+	
+	  if (cssVendorPrefix) return cssVendorPrefix;
+	
+	  var styles = window.getComputedStyle(document.documentElement, '');
+	  var pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1];
+	
+	  return cssVendorPrefix = '-' + pre + '-';
+	}
 
 
 /***/ }

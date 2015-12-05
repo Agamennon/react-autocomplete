@@ -5,7 +5,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var React = require('react');
 var scrollIntoView = require('dom-scroll-into-view');
 
-var _debugStates = [];
+function isServer() {
+  return !(typeof window != 'undefined' && window.document);
+}
+var Loader = null;
+if (!isServer()) {
+  Loader = require('halogen/ClipLoader');
+}
+
+//let _debugStates = [];
 
 var Autocomplete = React.createClass({
   displayName: 'Autocomplete',
@@ -20,7 +28,7 @@ var Autocomplete = React.createClass({
     menuStyle: React.PropTypes.object,
     wrapperProps: React.PropTypes.object,
     wrapperStyle: React.PropTypes.object,
-    minInput: React.PropTypes.object,
+    minInput: React.PropTypes.any,
     inputProps: React.PropTypes.object
   },
 
@@ -271,7 +279,6 @@ var Autocomplete = React.createClass({
     var _this6 = this;
 
     var items = this.getFilteredItems().map(function (item, index) {
-      console.log(index);
       var element = _this6.props.renderItem(item, _this6.state.highlightedIndex === index, { cursor: 'default' });
       return React.cloneElement(element, {
         onMouseDown: function onMouseDown() {
@@ -329,17 +336,28 @@ var Autocomplete = React.createClass({
   render: function render() {
     var _this8 = this;
 
-    console.log('rendering - value = ' + JSON.stringify(this.state));
+    //var __CLIENT__ = __CLIENT__;
+    //  console.log(<Loader/>)
+    /* if (!Loader){
+         Loader = <div>hello</div>
+     } else {
+         Loader =  <Loader color="#26A65B" size="13px" />
+     }*/
     /*if (this.props.debug) { // you don't like it, you love it
       _debugStates.push({
         id: _debugStates.length,
         state: this.state
       })
     }*/
+
+    //var wrapperStyle = Object.assign(this.props.wrapperStyle,{display:'table'});
+    var wrapperStyle = this.props.wrapperStyle;
+    wrapperStyle.display = 'table';
     return React.createElement(
       'div',
-      _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }),
+      _extends({}, this.props.wrapperProps, { style: _extends({}, wrapperStyle) }),
       React.createElement('input', _extends({}, this.props.inputProps, {
+        //  style={Object.assign(this.props.inputProps.style,{display:'inline-block'})}
         role: 'combobox',
         'aria-autocomplete': 'both',
         ref: 'input',
@@ -359,12 +377,42 @@ var Autocomplete = React.createClass({
         onClick: this.handleInputClick,
         value: this.state.value
       })),
-      this.state.isOpen && !!this.getFilteredItems().length && this.renderMenu()
+      this.state.isOpen && !!this.getFilteredItems().length && this.renderMenu(),
+      React.createElement(
+        'span',
+        { style: { position: 'relative', display: 'table-cell' } },
+        React.createElement(
+          'div',
+          { style: { position: 'absolute',
+              left: '-35px', top: '6px',
+              padding: '0px',
+              //   backgroundColor:'#196177',
+              width: '30x',
+              height: '30px',
+              zIndex: '10'
+              //   background:"url('./ajax-loader.gif') no-repeat",
+              //    backgroundPosition: '50% 50%'
+            } },
+          !isServer() ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null
+        )
+      )
     );
   }
 });
 
 module.exports = Autocomplete;
+
+//<Loader color="#26A65B" size="13px" />
+/*
+
+
+.my-combobox.small-loading{
+
+    background-color: #196177;
+    background:url('/resources/stylesheets/images/ajax-loader.gif') no-repeat ;
+    background-position: 50% 50%;
+
+}*/
 /*this.state.isOpen && this.renderMenu()*/ /*this.props.debug && (
                                             <pre style={{marginLeft: 300}}>
                                               {JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)}
