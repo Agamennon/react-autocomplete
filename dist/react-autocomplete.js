@@ -270,6 +270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this3 = this;
 	
 	    var items = [];
+	    var time = Date.now();
 	
 	    if (this.state.value.length >= this.props.minInput) {
 	      items = this.props.items;
@@ -286,6 +287,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 	    }
+	
+	    console.log(time - Date.now());
 	
 	    return items;
 	  },
@@ -454,7 +457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        zIndex: '10'
 	        //   background:"url('./ajax-loader.gif') no-repeat",
 	        //    backgroundPosition: '50% 50%'
-	      } }, !isServer() ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null)));
+	      } }, !isServer() && this.props.isLoading ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null)));
 	  }
 	});
 	

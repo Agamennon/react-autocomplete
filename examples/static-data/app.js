@@ -48,7 +48,9 @@ let App = React.createClass({
         <Autocomplete
           ref="gui"
           initialValue=""
-          minInput={3}
+          minInput={1}
+          autoSelect={false}
+          isLoading={true}
           items={getStates()}
           inputProps={inputProps}
           wrapperStyle={wrapperStyle}

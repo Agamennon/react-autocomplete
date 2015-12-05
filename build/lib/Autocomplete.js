@@ -198,6 +198,7 @@ var Autocomplete = React.createClass({
     var _this3 = this;
 
     var items = [];
+    var time = Date.now();
 
     if (this.state.value.length >= this.props.minInput) {
       items = this.props.items;
@@ -214,6 +215,8 @@ var Autocomplete = React.createClass({
         });
       }
     }
+
+    console.log(time - Date.now());
 
     return items;
   },
@@ -393,7 +396,7 @@ var Autocomplete = React.createClass({
               //   background:"url('./ajax-loader.gif') no-repeat",
               //    backgroundPosition: '50% 50%'
             } },
-          !isServer() ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null
+          !isServer() && this.props.isLoading ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null
         )
       )
     );
