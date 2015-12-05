@@ -90,16 +90,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    shouldItemRender: React.PropTypes.func,
 	    renderItem: React.PropTypes.func.isRequired,
 	    menuStyle: React.PropTypes.object,
+	    wrapperProps: React.PropTypes.object,
+	    wrapperStyle: React.PropTypes.object,
+	    minInput: React.PropTypes.object,
 	    inputProps: React.PropTypes.object
 	  },
 	
 	  getDefaultProps: function getDefaultProps() {
 	    return {
+	      wrapperProps: {},
+	      wrapperStyle: {
+	        display: 'inline-block'
+	      },
 	      inputProps: {},
+	      minInput: 0,
 	      onBlur: function onBlur() {},
 	      onChange: function onChange() {},
 	      onSelect: function onSelect(value, item) {},
 	      renderMenu: function renderMenu(items, value, style) {
+	
 	        return React.createElement('div', { style: _extends({}, style, this.menuStyle), children: items });
 	      },
 	      shouldItemRender: function shouldItemRender() {
@@ -113,11 +122,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        fontSize: '90%',
 	        position: 'fixed',
 	        overflow: 'auto',
-	        maxHeight: '50%' }
+	        maxHeight: '50%' // TODO: don't cheat, let it flow to the bottom
+	      }
 	    };
 	  },
 	
-	  // TODO: don't cheat, let it flow to the bottom
 	  getInitialState: function getInitialState() {
 	    return {
 	      value: this.props.initialValue || '',
@@ -137,7 +146,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
-	    if (this.state.isOpen === true && prevState.isOpen === false) this.setMenuPositions();
+	    //if (this.state.isOpen === true && prevState.isOpen === false)
+	    // this.setMenuPositions();
 	
 	    if (this.state.isOpen && this._performAutoCompleteOnUpdate) {
 	      this._performAutoCompleteOnUpdate = false;
@@ -162,6 +172,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        isOpen: true
 	      });
 	    }
+	  },
+	
+	  setValue: function setValue(value) {
+	    this.setState({
+	      value: value
+	    });
 	  },
 	
 	  handleChange: function handleChange(event) {
@@ -245,18 +261,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getFilteredItems: function getFilteredItems() {
 	    var _this3 = this;
 	
-	    var items = this.props.items;
+	    var items = [];
 	
-	    if (this.props.shouldItemRender) {
-	      items = items.filter(function (item) {
-	        return _this3.props.shouldItemRender(item, _this3.state.value);
-	      });
-	    }
+	    if (this.state.value.length >= this.props.minInput) {
+	      items = this.props.items;
 	
-	    if (this.props.sortItems) {
-	      items.sort(function (a, b) {
-	        return _this3.props.sortItems(a, b, _this3.state.value);
-	      });
+	      if (this.props.shouldItemRender) {
+	        items = items.filter(function (item) {
+	          return _this3.props.shouldItemRender(item, _this3.state.value);
+	        });
+	      }
+	
+	      if (this.props.sortItems) {
+	        items.sort(function (a, b) {
+	          return _this3.props.sortItems(a, b, _this3.state.value);
+	        });
+	      }
 	    }
 	
 	    return items;
@@ -283,19 +303,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	
-	  setMenuPositions: function setMenuPositions() {
-	    var node = this.refs.input;
-	    var rect = node.getBoundingClientRect();
-	    var computedStyle = getComputedStyle(node);
-	    var marginBottom = parseInt(computedStyle.marginBottom, 10);
-	    var marginLeft = parseInt(computedStyle.marginLeft, 10);
-	    var marginRight = parseInt(computedStyle.marginRight, 10);
-	    this.setState({
-	      menuTop: rect.bottom + marginBottom,
-	      menuLeft: rect.left + marginLeft,
-	      menuWidth: rect.width + marginLeft + marginRight
-	    });
-	  },
+	  /* setMenuPositions () {
+	     var node = this.refs.input;
+	     var rect = node.getBoundingClientRect();
+	     var computedStyle = getComputedStyle(node);
+	     var marginBottom = parseInt(computedStyle.marginBottom, 10);
+	     var marginLeft = parseInt(computedStyle.marginLeft, 10);
+	     var marginRight = parseInt(computedStyle.marginRight, 10);
+	     this.setState({
+	       menuTop: rect.bottom + marginBottom,
+	       menuLeft: rect.left + marginLeft,
+	       menu0: rect.width + marginLeft + marginRight
+	     })
+	   },*/
 	
 	  highlightItemFromMouse: function highlightItemFromMouse(index) {
 	    this.setState({ highlightedIndex: index });
@@ -323,6 +343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this6 = this;
 	
 	    var items = this.getFilteredItems().map(function (item, index) {
+	      console.log(index);
 	      var element = _this6.props.renderItem(item, _this6.state.highlightedIndex === index, { cursor: 'default' });
 	      return React.cloneElement(element, {
 	        onMouseDown: function onMouseDown() {
@@ -342,6 +363,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      top: this.state.menuTop,
 	      minWidth: this.state.menuWidth
 	    };
+	
+	    //var menu = items.length > 0 ? this.props.renderMenu(items, this.state.value, style) : '';
 	    var menu = this.props.renderMenu(items, this.state.value, style);
 	    return React.cloneElement(menu, { ref: 'menu' });
 	  },
@@ -359,25 +382,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  handleInputFocus: function handleInputFocus() {
+	
 	    if (this._ignoreBlur) return;
-	    this.setState({ isOpen: true });
+	    if (!this.state.isOpen) {
+	      console.log('focus');
+	      this.setState({ isOpen: true });
+	    }
 	  },
 	
 	  handleInputClick: function handleInputClick() {
-	    if (this.state.isOpen === false) this.setState({ isOpen: true });
+	
+	    if (!this.state.isOpen) {
+	      console.log('click');
+	      this.setState({ isOpen: true });
+	    }
 	  },
 	
 	  render: function render() {
 	    var _this8 = this;
 	
-	    if (this.props.debug) {
-	      // you don't like it, you love it
+	    console.log('rendering - value = ' + JSON.stringify(this.state));
+	    /*if (this.props.debug) { // you don't like it, you love it
 	      _debugStates.push({
 	        id: _debugStates.length,
 	        state: this.state
-	      });
-	    }
-	    return React.createElement('div', { style: { display: 'inline-block' } }, React.createElement('input', _extends({}, this.props.inputProps, {
+	      })
+	    }*/
+	    return React.createElement('div', _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }), React.createElement('input', _extends({}, this.props.inputProps, {
 	      role: 'combobox',
 	      'aria-autocomplete': 'both',
 	      ref: 'input',
@@ -396,11 +427,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      onClick: this.handleInputClick,
 	      value: this.state.value
-	    })), this.state.isOpen && this.renderMenu(), this.props.debug && React.createElement('pre', { style: { marginLeft: 300 } }, JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)));
+	    })), this.state.isOpen && !!this.getFilteredItems().length && this.renderMenu());
 	  }
 	});
 	
 	module.exports = Autocomplete;
+	/*this.state.isOpen && this.renderMenu()*/ /*this.props.debug && (
+	                                            <pre style={{marginLeft: 300}}>
+	                                              {JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)}
+	                                            </pre>
+	                                           )*/
 
 /***/ },
 /* 2 */
