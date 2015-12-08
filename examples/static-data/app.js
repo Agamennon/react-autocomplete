@@ -62,15 +62,23 @@ export default class App extends React.Component {
     constructor(){
         super();
         this.state ={
-            data:undefined
+            items:getStates()
         };
     }
 
     click(event) {
+        var data = getStates();
+       var half_length = Math.ceil(data.length / 2);
 
+        var leftSide = data.splice(0,10);
         this.setState({
-            data:getStates()
+        //    items:leftSide,
+            value:'aa'
         });
+       /* this.setState({
+            value:'hahaha'
+        });*/
+
         /* for (var x = 0 ; x < 5000 ; x++ ){
          console.log(x);
          }*/
@@ -114,21 +122,27 @@ export default class App extends React.Component {
     }
 
     onChange(event,value,item){
-        console.log('event',event);
-        console.log('value',value);
-        console.log('item',item);
+        this.setState({
+            value
+        });
+   //     console.log('event',event);
+    //    console.log('value',value);
+   //     console.log('item',item);
     }
 
 
     onBlur(event,value,item){
-        console.log('event',event);
-        console.log('value',value);
-        console.log('item',item);
+//        console.log('event',event);
+//        console.log('value',value);
+ //       console.log('item',item);
     }
 
     onSelect(value,item){
-        console.log('value',value);
-        console.log('item',item);
+        this.setState({
+            value
+        });
+   //     console.log('value',value);
+   //     console.log('item',item);
    }
 
 
@@ -169,14 +183,15 @@ export default class App extends React.Component {
 
                 <Autocomplete
                     ref="gui"
-                    initialValue=""
+                    //initialValue={this.state.value}
+                    value = {this.state.value}
                     minInput={0}
                 //    autoSelect={false}
                     isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
                     onSelect={this.onSelect.bind(this)}
-                    items={getStates()}
+                    items={this.state.items}
                     findObject={this.findObject.bind(this)}
 
                    // wrapperStyle={wrapperStyle}

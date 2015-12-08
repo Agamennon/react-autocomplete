@@ -109,7 +109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        autoSelect: React.PropTypes.any,
 	        inputProps: React.PropTypes.object,
 	        findObject: React.PropTypes.func,
-	        chevronStyle: React.PropTypes.func
+	        chevronStyle: React.PropTypes.object
 	
 	    },
 	
