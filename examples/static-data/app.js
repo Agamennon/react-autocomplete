@@ -125,24 +125,24 @@ export default class App extends React.Component {
         this.setState({
             value
         });
-   //     console.log('event',event);
-    //    console.log('value',value);
-   //     console.log('item',item);
+        console.log('change',event);
+        console.log('value',value);
+        console.log('item',item);
     }
 
 
     onBlur(event,value,item){
-//        console.log('event',event);
-//        console.log('value',value);
- //       console.log('item',item);
+        console.log('blur',event);
+        console.log('value',value);
+        console.log('item',item);
     }
 
     onSelect(value,item){
         this.setState({
             value
         });
-   //     console.log('value',value);
-   //     console.log('item',item);
+        console.log('select',value);
+        console.log('item',item);
    }
 
 

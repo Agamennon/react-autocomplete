@@ -96,7 +96,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    displayName: 'Autocomplete',
 	
 	    propTypes: {
-	        initialValue: React.PropTypes.any,
+	        // initialValue: React.PropTypes.any,
+	        value: React.PropTypes.any,
 	        onChange: React.PropTypes.func,
 	        onSelect: React.PropTypes.func,
 	        onBlur: React.PropTypes.func,
@@ -114,7 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    getDefaultProps: function getDefaultProps() {
-	        console.log(this.props);
+	
 	        return {
 	            wrapperProps: {},
 	            inputProps: {
@@ -123,6 +124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                style: { width: '100%', height: '30px', boxSizing: 'border-box', fontSize: '12', paddingLeft: '5px', paddingRight: '22px' }
 	            },
 	            minInput: 0,
+	            value: '',
 	            readOnly: false,
 	            autoSelect: false,
 	            showChevron: true,
@@ -180,7 +182,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getInitialState: function getInitialState() {
 	
 	        return {
-	            value: this.props.initialValue || '',
 	            isOpen: false,
 	            highlightedIndex: null
 	        };
@@ -191,7 +192,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._ignoreBlur = false;
 	        this._performAutoCompleteOnUpdate = false;
 	        this._performAutoCompleteOnKeyUp = false;
-	        var items = this.getFilteredItems(this.props.items || [], this.state.value);
+	        var items = this.props.items || [];
+	        // var items = this.getFilteredItems(this.props.items || [],this.props.value);
 	
 	        this.setState({
 	            items: items,
@@ -200,14 +202,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //this.state.items = this.props.options;
 	    },
 	
+	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	        // console.log(nextProps);
+	        // console.log(nextState);
+	
+	        return nextProps.value !== this.props.value || nextState.highlightedIndex !== this.state.highlightedIndex || nextState.isOpen !== this.state.isOpen || nextState.isLoading !== this.props.isLoading;
+	    },
+	
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	        this._performAutoCompleteOnUpdate = true;
-	        console.log('will receive');
-	        var items = this.getFilteredItems(nextProps.items || [], this.state.value);
-	        this.setState({
-	            items: items,
-	            itemsLength: items.length
-	        });
+	
+	        /*  console.log(nextProps.value);
+	         console.log(this.props.value);*/
+	        if (this.props.items.length !== nextProps.items.length) {
+	            var items = this.getFilteredItems(nextProps.items || [], nextProps.value);
+	
+	            this.setState({
+	                items: items,
+	                itemsLength: items.length
+	            });
+	        }
 	    },
 	
 	    componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
@@ -235,11 +249,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    },
 	
-	    setValue: function setValue(value) {
-	        this.setState({
-	            value: value
-	        });
-	    },
+	    /*  setValue(value) {
+	     this.setState({
+	     value
+	     });
+	     },*/
 	
 	    handleChange: function handleChange(event) {
 	        var _this = this;
@@ -250,7 +264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var value = event.target.value;
 	        var compare = value.substr(0, value.length - 1);
 	
-	        var itemsToFilter = compare === this.state.value ? this.state.items : this.props.items;
+	        var itemsToFilter = compare === this.props.value ? this.state.items : this.props.items;
 	        if (value.length >= this.props.minInput && this.state.itemsLength === 0) {
 	            itemsToFilter = this.props.items;
 	        }
@@ -261,14 +275,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.props.findObject) {
 	            item = this.props.findObject(itemsToFilter, value);
 	        }
-	        var items = this.getFilteredItems(itemsToFilter, event.target.value);
+	        var items = this.getFilteredItems(itemsToFilter, value);
 	
 	        this.setState({
-	            value: event.target.value,
 	            items: items,
 	            itemsLength: items.length
+	            //     item
 	        }, function () {
-	            _this.props.onChange(event, _this.state.value, item);
+	            _this.doNotEventBlur = false;
+	            _this.props.onChange(event, value, item);
 	        });
 	    },
 	
@@ -319,16 +334,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	                });
 	            } else {
 	                var item = this.state.items[this.state.highlightedIndex];
+	                var value = this.props.getItemValue(item);
 	                this.setState({
-	                    value: this.props.getItemValue(item),
+	
 	                    isOpen: false,
 	                    highlightedIndex: null
 	                }, function () {
 	                    //desceleciona
 	                    if (_this2.props.autoSelect) {
-	                        _this2.refs.input.setSelectionRange(_this2.state.value.length, _this2.state.value.length);
+	                        _this2.refs.input.setSelectionRange(value.length, value.length);
 	                    }
-	                    _this2.props.onSelect(_this2.state.value, item);
+	                    _this2.props.onSelect(value, item);
 	                });
 	            }
 	        },
@@ -371,7 +387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!this.props.autoSelect) {
 	            return;
 	        }
-	        if (this.state.value === '' || this.state.value.length < this.props.minInput) return;
+	        if (this.props.value === '' || this.props.value.length < this.props.minInput) return;
 	        var highlightedIndex = this.state.highlightedIndex;
 	
 	        var items = this.state.items;
@@ -379,12 +395,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (items.length === 0) return;
 	        var matchedItem = highlightedIndex !== null ? items[highlightedIndex] : items[0];
 	        var itemValue = this.props.getItemValue(matchedItem);
-	        var itemValueDoesMatch = itemValue.toLowerCase().indexOf(this.state.value.toLowerCase()) === 0;
+	        var itemValueDoesMatch = itemValue.toLowerCase().indexOf(this.props.value.toLowerCase()) === 0;
 	        if (itemValueDoesMatch) {
 	            var node = this.refs.input;
 	            var setSelection = function setSelection() {
 	                node.value = itemValue;
-	                node.setSelectionRange(_this4.state.value.length, itemValue.length);
+	                node.setSelectionRange(_this4.props.value.length, itemValue.length);
 	            };
 	
 	            if (highlightedIndex === null) this.setState({ highlightedIndex: 0 }, setSelection);else setSelection();
@@ -399,13 +415,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this5 = this;
 	
 	        this.setState({
-	            value: this.props.getItemValue(item),
 	            isOpen: false,
-	            highlightedIndex: null
+	            highlightedIndex: null,
+	            item: item
 	        }, function () {
-	            _this5.props.onSelect(_this5.state.value, item);
+	            _this5.props.onSelect(_this5.props.getItemValue(item), item);
 	            _this5.refs.input.focus();
 	            _this5.setIgnoreBlur(false);
+	            _this5.doNotEventBlur = true;
 	        });
 	    },
 	
@@ -431,32 +448,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	                ref: 'item-' + index
 	            });
 	        });
-	        var menu = this.props.renderMenu(items, this.state.value);
+	        var menu = this.props.renderMenu(items, this.props.value);
 	        return React.cloneElement(menu, { ref: 'menu' });
 	    },
 	
 	    handleInputBlur: function handleInputBlur(event) {
-	        var _this7 = this;
-	
+	        //if (this._ignoreBlur || this.doNotEventBlur)
 	        if (this._ignoreBlur) return;
-	        this.setState({
-	            isOpen: false,
-	            highlightedIndex: null
-	        }, function () {
+	
+	        if (!this.doNotEventBlur) {
 	            var item = null;
-	            if (_this7.props.findObject) {
-	                item = _this7.props.findObject(_this7.state.items, _this7.state.value);
+	            if (this.props.findObject) {
+	                item = this.props.findObject(this.state.items, event.target.value);
 	            }
-	            _this7.props.onBlur(event, _this7.state.value, item);
-	        });
+	            //  console.log('bluring');
+	            //   console.log(item);
+	            //   console.log(this.state.item);
+	            if (item !== this.state.item) {
+	                //    console.log('bluring + sending');
+	                this.props.onBlur(event, event.target.value, item);
+	            }
+	            this.setState({
+	                isOpen: false,
+	                highlightedIndex: null,
+	                item: item
+	            });
+	        }
 	    },
 	
 	    handleInputFocus: function handleInputFocus() {
 	
+	        this.doNotEventBlur = false;
+	
 	        if (this._ignoreBlur) return;
 	        if (!this.state.isOpen) {
-	
-	            this.setState({ isOpen: true });
+	            var items = this.props.items || [];
+	            //nao de update em items se quiser manter o que o usuario digitou
+	            this.setState({
+	                isOpen: true,
+	                items: items,
+	                itemsLength: items.length
+	            });
 	        }
 	    },
 	
@@ -469,28 +501,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    render: function render() {
-	        var _this8 = this;
+	        var _this7 = this;
 	
+	        //  console.log('rendering'+Math.random());
 	        return React.createElement('div', _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }), React.createElement('input', _extends({}, this.props.inputProps, {
 	            //  style={Object.assign(this.props.inputProps.style,{display:'inline-block'})}
 	            role: 'combobox',
 	            'aria-autocomplete': 'both',
 	            ref: 'input',
+	            disabled: this.props.disabled,
 	            onFocus: this.handleInputFocus,
 	            onBlur: function onBlur(event) {
-	                return _this8.handleInputBlur(event);
+	                return _this7.handleInputBlur(event);
 	            },
 	            onChange: function onChange(event) {
-	                return _this8.handleChange(event);
+	                return _this7.handleChange(event);
 	            },
 	            onKeyDown: function onKeyDown(event) {
-	                return _this8.handleKeyDown(event);
+	                return _this7.handleKeyDown(event);
 	            },
 	            onKeyUp: function onKeyUp(event) {
-	                return _this8.handleKeyUp(event);
+	                return _this7.handleKeyUp(event);
 	            },
 	            onClick: this.handleInputClick,
-	            value: this.state.value
+	            value: this.props.value
 	        })), this.state.isOpen && !!this.state.itemsLength && this.renderMenu(), React.createElement('div', { style: { position: 'relative', display: 'table-cell' } }, React.createElement('div', { style: this.props.spinnerStyle }, !isServer() && this.props.isLoading ? React.createElement(Loader, { color: '#26A65B', size: '17px' }) : null), this.props.showChevron && !this.props.isLoading && !isIE10 ? React.createElement('div', { style: this.props.chevronStyle }, '▾') : null));
 	    }
 	});
