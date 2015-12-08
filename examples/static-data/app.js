@@ -10,7 +10,8 @@ export let styles = {
     item: {
         padding: '2px 6px',
         cursor: 'default',
-        margin:'2px'
+        margin:'2px',
+        fontSize:'12'
     },
 
     highlightedItem: {
@@ -18,6 +19,7 @@ export let styles = {
         // background: 'hsl(200, 50%, 50%)',
         background: '#4E5066',
         padding: '2px 6px',
+        fontSize:'12',
         cursor: 'default',
         margin:'2px'
     },
@@ -29,27 +31,29 @@ export let styles = {
 
 
 export let wrapperStyle = {
-    position:'relative',
-    width:'100%'
-
+   // position:'relative',
+   // width:'100%'
 };
 export let inputProps = {
-    type:'search'
-    //  style:{width:'100%'}
+   // type:'search',
+    //readOnly:'read-only',
+    style:{width:'100%',height:'30px',  boxSizing:'border-box', fontSize:'12', paddingLeft:'5px', paddingRight:'22px'}
 };
 
+
+
 export let menuStyle = {
-    width:'inherit',
-    left:'0',
-    top:'33px',
-    borderRadius: '3px',
-    border:'1px solid black',
-    background: 'white',
-    padding: '2px 0',
-    zIndex:'2',
-    position: 'absolute',
-    overflow: 'auto',
-    maxHeight: '200px' // TODO: don't cheat, let it flow to the bottom
+  //  width:'inherit',
+  //  left:'0',
+  //  top:'33px',
+ //   borderRadius: '3px',
+  //  border:'1px solid black',
+  //  background: 'white',
+  //  padding: '2px 0',
+ //   zIndex:'2',
+ //   position: 'absolute',
+ //   overflow: 'auto',
+ //   maxHeight: '200px' // TODO: don't cheat, let it flow to the bottom
 
 };
 
@@ -155,7 +159,7 @@ export default class App extends React.Component {
         };
 */
         return (
-            <div style={{width:'50%'}}>
+            <div style={{width: '300px'}}>
                 <h1>Basic Example with Static Data</h1>
 
                 <p>
@@ -168,15 +172,17 @@ export default class App extends React.Component {
                     initialValue=""
                     minInput={0}
                 //    autoSelect={false}
-                 //   isLoading={true}
+                    isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
                     onSelect={this.onSelect.bind(this)}
-                    items={this.state.data}
+                    items={getStates()}
                     findObject={this.findObject.bind(this)}
+
+                   // wrapperStyle={wrapperStyle}
                     inputProps={inputProps}
-                    wrapperStyle={wrapperStyle}
-                    menuStyle={menuStyle}
+                   // menuStyle={menuStyle}
+
                     getItemValue={this.getItemValue.bind(this)}
                     shouldItemRender={this.matchStateToTerm.bind(this)}
                     //   sortItems={sortStates}

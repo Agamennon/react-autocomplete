@@ -8,10 +8,17 @@ var scrollIntoView = require('dom-scroll-into-view');
 function isServer() {
     return !(typeof window != 'undefined' && window.document);
 }
+
 var Loader = null;
+var isIE10 = false;
 if (!isServer()) {
     Loader = require('halogen/ClipLoader');
+    if (navigator.appVersion.indexOf("MSIE 10") !== -1) {
+        isIE10 = true;
+    }
 }
+
+//default props
 
 var Autocomplete = React.createClass({
     displayName: 'Autocomplete',
@@ -29,18 +36,24 @@ var Autocomplete = React.createClass({
         minInput: React.PropTypes.any,
         autoSelect: React.PropTypes.any,
         inputProps: React.PropTypes.object,
-        findObject: React.PropTypes.func
+        findObject: React.PropTypes.func,
+        chevronStyle: React.PropTypes.func
+
     },
 
     getDefaultProps: function getDefaultProps() {
+        console.log(this.props);
         return {
             wrapperProps: {},
-            wrapperStyle: {
-                display: 'inline-block'
+            inputProps: {
+                //  type:'search',
+                //padding:'3px',
+                style: { width: '100%', height: '30px', boxSizing: 'border-box', fontSize: '12', paddingLeft: '5px', paddingRight: '22px' }
             },
-            inputProps: {},
             minInput: 0,
+            readOnly: false,
             autoSelect: false,
+            showChevron: true,
             onBlur: function onBlur() {},
             onChange: function onChange() {},
             onSelect: function onSelect(value, item) {},
@@ -52,15 +65,43 @@ var Autocomplete = React.createClass({
                 return true;
             },
             menuStyle: {
-                borderRadius: '3px',
-                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-                background: 'rgba(255, 255, 255, 0.9)',
-                padding: '2px 0',
-                fontSize: '90%',
-                position: 'fixed',
+                width: 'inherit',
+                left: '0',
+                top: '30px',
+                //  borderRadius: '3px',
+                border: '1px solid black',
+                background: 'white',
+                //    padding: '2px 0',
+                zIndex: '2',
+                position: 'absolute',
                 overflow: 'auto',
-                maxHeight: '50%' // TODO: don't cheat, let it flow to the bottom
+                maxHeight: '200px'
+            },
+            spinnerStyle: {
+                position: 'absolute',
+                left: '-6px', top: '5px',
+                padding: '0px',
+                width: '30x',
+                height: '30px',
+                zIndex: '10'
+            },
+            wrapperStyle: {
+                position: 'relative',
+                width: '100%',
+                display: 'table'
+            },
+            chevronStyle: {
+                position: 'absolute',
+                left: '-20px', top: '0px',
+                pointerEvents: 'none',
+                // padding:'0px',
+                fontSize: '18px',
+                //  align:'center',
+                //   width:'10px',
+                //    height:'10px',
+                zIndex: '2'
             }
+
         };
     },
 
@@ -358,11 +399,9 @@ var Autocomplete = React.createClass({
     render: function render() {
         var _this8 = this;
 
-        var wrapperStyle = this.props.wrapperStyle;
-        wrapperStyle.display = 'table';
         return React.createElement(
             'div',
-            _extends({}, this.props.wrapperProps, { style: _extends({}, wrapperStyle) }),
+            _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }),
             React.createElement('input', _extends({}, this.props.inputProps, {
                 //  style={Object.assign(this.props.inputProps.style,{display:'inline-block'})}
                 role: 'combobox',
@@ -386,25 +425,28 @@ var Autocomplete = React.createClass({
             })),
             this.state.isOpen && !!this.state.itemsLength && this.renderMenu(),
             React.createElement(
-                'span',
+                'div',
                 { style: { position: 'relative', display: 'table-cell' } },
                 React.createElement(
                     'div',
-                    { style: {
-                            position: 'absolute',
-                            left: '-55px', top: '6px',
-                            padding: '0px',
-                            width: '30x',
-                            height: '30px',
-                            zIndex: '10'
-
-                        } },
-                    !isServer() && this.props.isLoading ? React.createElement(Loader, { color: '#26A65B', size: '22px' }) : null
-                )
+                    { style: this.props.spinnerStyle },
+                    !isServer() && this.props.isLoading ? React.createElement(Loader, { color: '#26A65B', size: '17px' }) : null
+                ),
+                this.props.showChevron && !this.props.isLoading && !isIE10 ? React.createElement(
+                    'div',
+                    { style: this.props.chevronStyle },
+                    '▾'
+                ) : null
             )
         );
     }
 });
 
 module.exports = Autocomplete;
+//&& !this.props.isLoading
+/*
+
+ <div>
+ &#x025BE;
+ &#9662;</div>*/
 /*this.state.isOpen && this.renderMenu()*/
