@@ -8,20 +8,19 @@ import Autocomplete from '../../lib/index'
 
 export let styles = {
     item: {
-        padding: '2px 6px',
+        padding: '8px',
         cursor: 'default',
-        margin:'2px',
-        fontSize:'12'
+        fontSize:'12px'
     },
 
     highlightedItem: {
         color: 'white',
         // background: 'hsl(200, 50%, 50%)',
         background: '#4E5066',
-        padding: '2px 6px',
-        fontSize:'12',
-        cursor: 'default',
-        margin:'2px'
+        padding: '8px',
+        fontSize:'12px',
+        cursor: 'default'
+
     },
 
     menu: {
@@ -62,7 +61,8 @@ export default class App extends React.Component {
     constructor(){
         super();
         this.state ={
-            items:getStates()
+            items:getStates(),
+            defaultValue:'banana'
         };
     }
 
@@ -73,7 +73,7 @@ export default class App extends React.Component {
         var leftSide = data.splice(0,10);
         this.setState({
         //    items:leftSide,
-            value:'aa'
+            defaultValue:'hahaha'
         });
        /* this.setState({
             value:'hahaha'
@@ -132,6 +132,9 @@ export default class App extends React.Component {
 
 
     onBlur(event,value,item){
+        this.setState({
+            value
+        });
         console.log('blur',event);
         console.log('value',value);
         console.log('item',item);
@@ -172,6 +175,9 @@ export default class App extends React.Component {
 
         };
 */
+     //  inputProps.value = this.state.value;
+        //initialValue={this.state.value}
+        //value = {this.state.value}
         return (
             <div style={{width: '300px'}}>
                 <h1>Basic Example with Static Data</h1>
@@ -183,13 +189,15 @@ export default class App extends React.Component {
 
                 <Autocomplete
                     ref="gui"
-                    //initialValue={this.state.value}
-                    value = {this.state.value}
+                    value={this.state.defaultValue}
                     minInput={0}
                 //    autoSelect={false}
                     isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
+                    toUpper={false}
+                    toUpperOnBlur={true}
+                    placeholder='haha'
                     onSelect={this.onSelect.bind(this)}
                     items={this.state.items}
                     findObject={this.findObject.bind(this)}
