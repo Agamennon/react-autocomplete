@@ -62,7 +62,7 @@ export default class App extends React.Component {
         super();
         this.state ={
             items:getStates(),
-            defaultValue:'banana'
+           value:'banana'
         };
     }
 
@@ -73,7 +73,7 @@ export default class App extends React.Component {
         var leftSide = data.splice(0,10);
         this.setState({
         //    items:leftSide,
-            defaultValue:'hahaha'
+            value:'hahaha'
         });
        /* this.setState({
             value:'hahaha'
@@ -189,7 +189,7 @@ export default class App extends React.Component {
 
                 <Autocomplete
                     ref="gui"
-                    value={this.state.defaultValue}
+                    value={this.state.value}
                     minInput={0}
                 //    autoSelect={false}
                     isLoading={false}

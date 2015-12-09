@@ -129,8 +129,8 @@ var Autocomplete = React.createClass({
     },
 
     componentDidMount: function componentDidMount() {
-        console.log('did mount');
-        this.refs.input.value = this.props.value;
+
+        this.refs.input.value = this.props.value || '';
     },
 
     shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
@@ -141,13 +141,13 @@ var Autocomplete = React.createClass({
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
         if (!this._select && !this._change) {
-            this.refs.input.value = nextProps.value;
+            this.refs.input.value = nextProps.value || '';
         }
         this._select = false;
         this._change = false;
 
         if (this.props.items.length !== nextProps.items.length) {
-            var items = this.getFilteredItems(nextProps.items || [], nextProps.value);
+            var items = this.getFilteredItems(nextProps.items || [], nextProps.value || '');
             this.setState({
                 items: items,
                 itemsLength: items.length
