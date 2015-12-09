@@ -198,6 +198,7 @@ export default class App extends React.Component {
                     toUpper={false}
                     toUpperOnBlur={true}
                     placeholder='haha'
+
                     onSelect={this.onSelect.bind(this)}
                     items={this.state.items}
                     findObject={this.findObject.bind(this)}

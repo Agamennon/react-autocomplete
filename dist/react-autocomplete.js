@@ -192,6 +192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var items = this.props.items || [];
 	        this._select = false;
 	        this._change = false;
+	        this.doNotEventBlur = true;
 	        //  this.refs.input.value = this.props.defaultValue || '';
 	        this.setState({
 	            value: this.props.value,
@@ -206,13 +207,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	
-	        return nextState.highlightedIndex !== this.state.highlightedIndex || nextState.isOpen !== this.state.isOpen || nextState.isLoading !== this.props.isLoading;
+	        return true;
+	        return nextState.highlightedIndex !== this.state.highlightedIndex || nextState.isOpen !== this.state.isOpen || nextProps.isLoading !== this.props.isLoading || this.props.value !== nextProps.value || this.props.disabled !== nextProps.disabled;
 	    },
 	
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	
 	        if (!this._select && !this._change) {
+	            //    console.log('updading value on select ='+nextProps.value);
 	            this.refs.input.value = nextProps.value || '';
 	        }
 	        this._select = false;
@@ -232,6 +234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    maybeScrollItemIntoView: function maybeScrollItemIntoView() {
+	
 	        if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
 	            var itemNode = this.refs['item-' + this.state.highlightedIndex];
 	            var menuNode = this.refs.menu;
@@ -249,13 +252,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    setValue: function setValue(value) {
-	        this.refs.input.value(value);
+	        this.refs.input.value = value;
 	    },
 	
 	    handleChange: function handleChange(event) {
 	        var _this = this;
 	
 	        this._change = true;
+	        this.doNotEventBlur = false;
 	        var item = null;
 	        var value = event.target.value;
 	        var compare = value.substr(0, value.length - 1);
@@ -419,12 +423,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.fromBlur = true;
 	        if (this._ignoreBlur) return;
 	
+	        this._change = true;
 	        //doNotEventBlur server para quando se selecionado novamente o controle sem alteracao ele nao dispara o blur event denovo
 	        if (!this.doNotEventBlur) {
 	            var item = null;
+	
 	            if (this.props.findObject) {
 	                item = this.props.findObject(this.state.items, event.target.value);
 	            }
+	
 	            var comp = item || event.target.value;
 	            if (comp !== this.state.item) {
 	                var value = this.props.toUpper || this.props.toUpperOnBlur ? event.target.value.toUpperCase() : event.target.value;
@@ -435,11 +442,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                highlightedIndex: null,
 	                item: comp
 	            });
+	        } else {
+	            this.setState({
+	                isOpen: false
+	            });
+	            this._change = false;
 	        }
 	    },
 	
 	    handleInputFocus: function handleInputFocus() {
-	        this.doNotEventBlur = false;
+	        //   this.doNotEventBlur = false;
 	        if (this._ignoreBlur) return;
 	        if (!this.state.isOpen) {
 	            var items = this.props.items || [];
