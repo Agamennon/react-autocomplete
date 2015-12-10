@@ -99,6 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // initialValue: React.PropTypes.any,
 	        value: React.PropTypes.any,
 	        toUpper: React.PropTypes.bool,
+	        exact: React.PropTypes.bool,
 	        toUpperOnBlur: React.PropTypes.bool,
 	        onChange: React.PropTypes.func,
 	        onSelect: React.PropTypes.func,
@@ -119,6 +120,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        return {
 	            wrapperProps: {},
+	            exact: false,
 	            inputProps: {
 	                //  type:'search',
 	                //padding:'3px',
@@ -192,6 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var items = this.props.items || [];
 	        this._select = false;
 	        this._change = false;
+	        //    this._updated = false;
 	        this.doNotEventBlur = true;
 	        //  this.refs.input.value = this.props.defaultValue || '';
 	        this.setState({
@@ -206,19 +209,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.refs.input.value = this.props.value || '';
 	    },
 	
-	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	        return true;
-	        return nextState.highlightedIndex !== this.state.highlightedIndex || nextState.isOpen !== this.state.isOpen || nextProps.isLoading !== this.props.isLoading || this.props.value !== nextProps.value || this.props.disabled !== nextProps.disabled;
-	    },
+	    /* shouldComponentUpdate (nextProps, nextState) {
+	         return true
+	         return  (nextState.highlightedIndex !== this.state.highlightedIndex) ||
+	             (nextState.isOpen !== this.state.isOpen) ||  (nextProps.isLoading !== this.props.isLoading) ||
+	             (this.props.value !== nextProps.value) || (this.props.disabled !== nextProps.disabled)
+	     },
+	    */
 	
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	
 	        if (!this._select && !this._change) {
-	            //    console.log('updading value on select ='+nextProps.value);
+	            //  console.log('updading value on select ='+nextProps.value);
 	            this.refs.input.value = nextProps.value || '';
 	        }
 	        this._select = false;
 	        this._change = false;
+	        //    this._updated = false;
 	
 	        if (this.props.items.length !== nextProps.items.length) {
 	            var items = this.getFilteredItems(nextProps.items || [], nextProps.value || '');
@@ -258,6 +265,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    handleChange: function handleChange(event) {
 	        var _this = this;
 	
+	        //    this._updated = true;
+	        //    console.log('change');
 	        this._change = true;
 	        this.doNotEventBlur = false;
 	        var item = null;
@@ -281,7 +290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            itemsLength: items.length
 	        }, function () {
 	            _this.doNotEventBlur = false;
-	            _this.props.onChange(event, _this.props.toUpper ? value.toUpperCase() : value, item);
+	            _this.props.onChange(event, _this.props.toUpper ? value.toUpperCase().trim() : value, item);
 	        });
 	    },
 	
@@ -330,13 +339,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.setState({
 	                    isOpen: false,
 	                    highlightedIndex: null
-	                }, function () {
-	                    //desceleciona
-	                    if (_this2.props.autoSelect) {
-	                        _this2.refs.input.setSelectionRange(value.length, value.length);
-	                    }
-	                    _this2.props.onSelect(value, item);
 	                });
+	                this.props.onSelect(value, item);
 	            }
 	        },
 	
@@ -378,6 +382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    selectItemFromMouse: function selectItemFromMouse(item) {
 	        var _this4 = this;
 	
+	        // this._updated = true;
 	        this.setState({
 	            isOpen: false,
 	            highlightedIndex: null,
@@ -387,7 +392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this4._select = true;
 	            _this4.refs.input.focus();
 	            _this4.refs.input.value = _this4.props.getItemValue(item);
-	            _this4.props.onSelect(_this4.props.getItemValue(item), item);
+	            _this4.props.onSelect.bind(_this4, _this4.props.getItemValue(item), item);
 	            _this4.setIgnoreBlur(false);
 	            _this4.doNotEventBlur = true;
 	        });
@@ -420,11 +425,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    handleInputBlur: function handleInputBlur(event) {
+	
 	        this.fromBlur = true;
 	        if (this._ignoreBlur) return;
 	
 	        this._change = true;
-	        //doNotEventBlur server para quando se selecionado novamente o controle sem alteracao ele nao dispara o blur event denovo
+	        //doNotEventBlur server para quando se selecionado (select) novamente o controle sem alteracao ele nao dispara o blur event denovo
 	        if (!this.doNotEventBlur) {
 	            var item = null;
 	
@@ -434,8 +440,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            var comp = item || event.target.value;
 	            if (comp !== this.state.item) {
-	                var value = this.props.toUpper || this.props.toUpperOnBlur ? event.target.value.toUpperCase() : event.target.value;
-	                this.props.onBlur(event, value, item);
+	
+	                var value = this.props.toUpper || this.props.toUpperOnBlur ? event.target.value.toUpperCase().trim() : event.target.value;
+	                if (this.props.exact) {
+	                    if (item) {
+	                        this.props.onBlur(event, value, item);
+	                    } else {
+	
+	                        this.refs.input.value = '';
+	                        this.props.onBlur(event, '', null);
+	                    }
+	                } else {
+	                    this.props.onBlur(event, value, item);
+	                }
+	            } else {
+	                if (this.props.exact && !item) {
+	                    this.refs.input.value = '';
+	                }
 	            }
 	            this.setState({
 	                isOpen: false,
@@ -448,6 +469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	            this._change = false;
 	        }
+	        this._change = false;
 	    },
 	
 	    handleInputFocus: function handleInputFocus() {

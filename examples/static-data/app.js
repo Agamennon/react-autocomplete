@@ -62,7 +62,7 @@ export default class App extends React.Component {
         super();
         this.state ={
             items:getStates(),
-           value:'banana'
+           value:'111'
         };
     }
 
@@ -121,37 +121,76 @@ export default class App extends React.Component {
         return obj
     }
 
-    onChange(event,value,item){
-        this.setState({
-            value
+    findLabelFromValue(input,items){
+        var label = input;
+        items.some((item)=>{ //find the option that matches the value to send to change
+            if (input == item.value){
+                label = item.label;
+                return true;
+            }
         });
-        console.log('change',event);
+        return label
+    }
+
+
+    onChange(event,value,item){
+       /* this.setState({
+            value
+        });*/
+       /* console.log('change',event);
         console.log('value',value);
-        console.log('item',item);
+        console.log('item',item);*/
     }
 
 
     onBlur(event,value,item){
-        this.setState({
-            value
-        });
-        console.log('blur',event);
+    console.log('hello');
+     //   setTimeout(()=>{
+        /*    console.log(value);
+            this.setState({
+                value
+            });*/
+      //  },1000);
+
+    /*    console.log('blur',event);
         console.log('value',value);
-        console.log('item',item);
+        console.log('item',item);*/
     }
 
-    onSelect(value,item){
-        this.setState({
+    onSelect(value,item,a){
+        console.log(value)
+        console.log(item)
+        console.log(a)
+       /* this.setState({
             value
-        });
-        console.log('select',value);
-        console.log('item',item);
+        });*/
+
    }
 
 
 
 
     render() {
+
+
+
+        var options = [
+            {
+             label:'banana',
+             value:'111'
+            },
+            {
+             label:'pera',
+             value:'222'
+            },
+            {
+             label:'uva',
+             value:'333'
+            }
+        ];
+
+
+
     /*    var inputProps = {
             style: {width: '100%'}
         };
@@ -195,14 +234,14 @@ export default class App extends React.Component {
                     isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
-                    toUpper={false}
+
                     toUpperOnBlur={true}
                     placeholder='haha'
-
-                    onSelect={this.onSelect.bind(this)}
-                    items={this.state.items}
+                    exact={false}
+                    onSelect={this.onSelect.bind(this,{'a':'yehue'})}
+                    items={options}
                     findObject={this.findObject.bind(this)}
-
+                    findLabelFromValue={this.findLabelFromValue.bind(this)}
                    // wrapperStyle={wrapperStyle}
                     inputProps={inputProps}
                    // menuStyle={menuStyle}
