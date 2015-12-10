@@ -62,7 +62,7 @@ export default class App extends React.Component {
         super();
         this.state ={
             items:getStates(),
-           value:'111'
+           value:'333'
         };
     }
 
@@ -73,7 +73,7 @@ export default class App extends React.Component {
         var leftSide = data.splice(0,10);
         this.setState({
         //    items:leftSide,
-            value:'hahaha'
+            value:'111'
         });
        /* this.setState({
             value:'hahaha'
@@ -112,7 +112,7 @@ export default class App extends React.Component {
         var obj = null;
 
         items.some((item)=>{ //find the option that matches the value to send to change
-            if (removeDiacritics(value.toUpperCase()) == removeDiacritics(item.label.toUpperCase().trim())){
+            if ((removeDiacritics(value.toUpperCase()) == removeDiacritics(item.label.toUpperCase().trim())) || (item.value == value)){
                 obj = item;
 
                 return true;
@@ -122,6 +122,7 @@ export default class App extends React.Component {
     }
 
     findLabelFromValue(input,items){
+
         var label = input;
         items.some((item)=>{ //find the option that matches the value to send to change
             if (input == item.value){
@@ -144,26 +145,24 @@ export default class App extends React.Component {
 
 
     onBlur(event,value,item){
-    console.log('hello');
-     //   setTimeout(()=>{
-        /*    console.log(value);
-            this.setState({
-                value
-            });*/
-      //  },1000);
+       /* this.setState({
+            value:'bugaaa'
+        });*/
 
-    /*    console.log('blur',event);
+        console.log('blur',event);
         console.log('value',value);
-        console.log('item',item);*/
+        console.log('item',item);
     }
 
     onSelect(value,item,a){
-        console.log(value)
+      //  this.value = 'merda'
+      /*  console.log(value)
         console.log(item)
-        console.log(a)
-       /* this.setState({
-            value
+        console.log(a)*/
+      /*  this.setState({
+            value:'buga'
         });*/
+        //this.forceUpdate()
 
    }
 
@@ -234,10 +233,9 @@ export default class App extends React.Component {
                     isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
-
+                    exact={true}
                     toUpperOnBlur={true}
                     placeholder='haha'
-                    exact={false}
                     onSelect={this.onSelect.bind(this,{'a':'yehue'})}
                     items={options}
                     findObject={this.findObject.bind(this)}

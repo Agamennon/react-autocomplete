@@ -196,7 +196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._change = false;
 	        //    this._updated = false;
 	        this.doNotEventBlur = true;
-	        //  this.refs.input.value = this.props.defaultValue || '';
+	
 	        this.setState({
 	            value: this.props.value,
 	            items: items,
@@ -206,7 +206,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    componentDidMount: function componentDidMount() {
 	
-	        this.refs.input.value = this.props.value || '';
+	        //   this.refs.input.value = this.props.value || '';
+	        this.refs.input.value = this.props.findLabelFromValue(this.props.value, this.props.items) || '';
 	    },
 	
 	    /* shouldComponentUpdate (nextProps, nextState) {
@@ -219,9 +220,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	
+	        console.log(this._change);
+	        console.log(this._select);
+	        console.log(nextProps.value);
+	
 	        if (!this._select && !this._change) {
 	            //  console.log('updading value on select ='+nextProps.value);
-	            this.refs.input.value = nextProps.value || '';
+	            // this.refs.input.value = nextProps.value || '';
+	            this.refs.input.value = this.props.findLabelFromValue(nextProps.value, this.props.items) || '';
 	        }
 	        this._select = false;
 	        this._change = false;
@@ -271,6 +277,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.doNotEventBlur = false;
 	        var item = null;
 	        var value = event.target.value;
+	        //     var value =  this.props.findLabelFromValue(event.target.value,this.state.items);
+	
 	        var compare = value.substr(0, value.length - 1);
 	
 	        var itemsToFilter = compare === value ? this.state.items : this.props.items;
@@ -335,7 +343,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	                var item = this.state.items[this.state.highlightedIndex];
 	                var value = this.props.getItemValue(item);
-	                this.refs.input.value = this.props.getItemValue(item);
+	                //this.refs.input.value = this.props.getItemValue(item);
+	                this.refs.input.value = this.props.findLabelFromValue(this.props.getItemValue(item), this.props.items);
 	                this.setState({
 	                    isOpen: false,
 	                    highlightedIndex: null
@@ -389,10 +398,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            item: item
 	        }, function () {
-	            _this4._select = true;
+	            _this4._select = false;
 	            _this4.refs.input.focus();
 	            _this4.refs.input.value = _this4.props.getItemValue(item);
-	            _this4.props.onSelect.bind(_this4, _this4.props.getItemValue(item), item);
+	            // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items);
+	
+	            //this.props.onSelect.bind(this,this.props.getItemValue(item), item)();
+	            _this4.props.onSelect(_this4.props.getItemValue(item), item);
+	
 	            _this4.setIgnoreBlur(false);
 	            _this4.doNotEventBlur = true;
 	        });
@@ -435,13 +448,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var item = null;
 	
 	            if (this.props.findObject) {
-	                item = this.props.findObject(this.state.items, event.target.value);
+	                //item = this.props.findObject(this.state.items,event.target.value);
+	                item = this.props.findObject(this.props.items, event.target.value);
 	            }
 	
 	            var comp = item || event.target.value;
 	            if (comp !== this.state.item) {
 	
-	                var value = this.props.toUpper || this.props.toUpperOnBlur ? event.target.value.toUpperCase().trim() : event.target.value;
+	                var value = this.props.findLabelFromValue(event.target.value, this.props.items);
+	                value = this.props.toUpper || this.props.toUpperOnBlur ? value.toUpperCase().trim() : value;
+	
+	                //todo fazer isso ser opcional (mudar o valor do input caso value encontrado)
+	                this.refs.input.value = value;
+	                //value2  = (this.props.toUpper || this.props.toUpperOnBlur) ? event.target.value.toUpperCase().trim() : value2;
+	
 	                if (this.props.exact) {
 	                    if (item) {
 	                        this.props.onBlur(event, value, item);
