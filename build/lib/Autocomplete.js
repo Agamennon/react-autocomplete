@@ -148,9 +148,9 @@ var Autocomplete = React.createClass({
 
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 
-        console.log(this._change);
-        console.log(this._select);
-        console.log(nextProps.value);
+        /*     console.log(this._change)
+             console.log(this._select)
+             console.log( nextProps.value)*/
 
         if (!this._select && !this._change) {
             //  console.log('updading value on select ='+nextProps.value);
