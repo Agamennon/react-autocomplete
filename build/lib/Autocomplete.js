@@ -32,7 +32,7 @@ var Autocomplete = React.createClass({
         onChange: React.PropTypes.func,
         onSelect: React.PropTypes.func,
         onBlur: React.PropTypes.func,
-        focusOnCreate: React.PropTypes.func,
+        focusOnCreate: React.PropTypes.any,
         shouldItemRender: React.PropTypes.func,
         renderItem: React.PropTypes.func.isRequired,
         menuStyle: React.PropTypes.object,
