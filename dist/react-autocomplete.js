@@ -104,6 +104,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onChange: React.PropTypes.func,
 	        onSelect: React.PropTypes.func,
 	        onBlur: React.PropTypes.func,
+	        focusOnCreate: React.PropTypes.func,
 	        shouldItemRender: React.PropTypes.func,
 	        renderItem: React.PropTypes.func.isRequired,
 	        menuStyle: React.PropTypes.object,
@@ -129,6 +130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            minInput: 0,
 	            toUpper: false,
 	            toUpperOnBlur: false,
+	            focusOnCreate: false,
 	            readOnly: false,
 	            showChevron: true,
 	            onBlur: function onBlur() {},
@@ -208,6 +210,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        //   this.refs.input.value = this.props.value || '';
 	        this.refs.input.value = this.props.findLabelFromValue(this.props.value, this.props.items) || '';
+	        if (this.props.focusOnCreate) {
+	            this.refs.input.focus();
+	        }
 	    },
 	
 	    /* shouldComponentUpdate (nextProps, nextState) {
@@ -247,7 +252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    maybeScrollItemIntoView: function maybeScrollItemIntoView() {
-	
+	        //todo quando usa seta para cima ou para baixo em um controle sem items da Uncaught TypeError: Cannot read property 'nodeType' of undefined
 	        if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
 	            var itemNode = this.refs['item-' + this.state.highlightedIndex];
 	            var menuNode = this.refs.menu;
@@ -266,6 +271,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    setValue: function setValue(value) {
 	        this.refs.input.value = value;
+	    },
+	
+	    setFocus: function setFocus() {
+	        this.refs.input.focus();
+	    },
+	
+	    getRef: function getRef() {
+	        return this.refs.input;
 	    },
 	
 	    handleChange: function handleChange(event) {
@@ -520,6 +533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'aria-autocomplete': 'both',
 	            ref: 'input',
 	            disabled: this.props.disabled,
+	            focusOnCreate: this.props.focusOnCreate,
 	            placeholder: this.props.placeholder,
 	            onFocus: this.handleInputFocus,
 	            onBlur: function onBlur(event) {
