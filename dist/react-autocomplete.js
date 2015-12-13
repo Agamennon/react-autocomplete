@@ -297,6 +297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var compare = value.substr(0, value.length - 1);
 	
 	        var itemsToFilter = compare === value ? this.state.items : this.props.items;
+	
 	        if (value.length >= this.props.minInput && this.state.itemsLength === 0) {
 	            itemsToFilter = this.props.items;
 	        }
@@ -383,11 +384,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var result = [];
 	        //  var time = Date.now();
 	        if (value.length >= this.props.minInput) {
+	
 	            result = items;
 	            if (this.props.shouldItemRender) {
-	                result = items.filter(function (item) {
-	                    return _this3.props.shouldItemRender(item, value);
-	                });
+	                if (!value) {
+	                    result = items;
+	                } else {
+	                    result = items.filter(function (item) {
+	                        return _this3.props.shouldItemRender(item, value);
+	                    });
+	                }
 	            }
 	            if (this.props.sortItems) {
 	                result.sort(function (a, b) {

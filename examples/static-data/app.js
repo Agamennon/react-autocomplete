@@ -93,6 +93,11 @@ export default class App extends React.Component {
 
 
     matchStateToTerm(state, value) {
+        /*if (!value){
+            console.log('hello');
+            return true;
+        }
+*/
         return (
             removeDiacritics(state.label.toUpperCase()).indexOf(removeDiacritics(value.toUpperCase().trim())) !== -1
         )
@@ -239,7 +244,7 @@ export default class App extends React.Component {
                     placeholder='haha'
                     focusOnCreate={false}
                     onSelect={this.onSelect.bind(this,{'a':'yehue'})}
-                    items={options}
+                    items={this.state.items}
                     findObject={this.findObject.bind(this)}
                     findLabelFromValue={this.findLabelFromValue.bind(this)}
                    // wrapperStyle={wrapperStyle}
