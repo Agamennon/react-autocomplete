@@ -71,10 +71,11 @@ export default class App extends React.Component {
        var half_length = Math.ceil(data.length / 2);
 
         var leftSide = data.splice(0,10);
-        this.setState({
+        this.refs.gui.setFocus();
+    /*    this.setState({
         //    items:leftSide,
             value:'111'
-        });
+        });*/
        /* this.setState({
             value:'hahaha'
         });*/
@@ -236,6 +237,7 @@ export default class App extends React.Component {
                     exact={true}
                     toUpperOnBlur={true}
                     placeholder='haha'
+                    focusOnCreate={false}
                     onSelect={this.onSelect.bind(this,{'a':'yehue'})}
                     items={options}
                     findObject={this.findObject.bind(this)}
@@ -249,6 +251,8 @@ export default class App extends React.Component {
                     //   sortItems={sortStates}
                     renderItem={this.renderItem.bind(this)}
                 />
+                <input/>
+
                 <button onClick={this.click.bind(this)}>do</button>
             </div>
         )
