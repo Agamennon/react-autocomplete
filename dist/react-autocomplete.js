@@ -304,10 +304,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!itemsToFilter) {
 	            itemsToFilter = [];
 	        }
-	        if (this.props.findObject) {
-	            item = this.props.findObject(itemsToFilter, value);
+	
+	        var items;
+	
+	        if (value) {
+	            if (this.props.findObject) {
+	                item = this.props.findObject(itemsToFilter, value);
+	            }
+	            items = this.getFilteredItems(itemsToFilter, value);
+	        } else {
+	            items = this.props.items;
 	        }
-	        var items = this.getFilteredItems(itemsToFilter, value);
 	
 	        this.setState({
 	            items: items,
@@ -387,13 +394,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            result = items;
 	            if (this.props.shouldItemRender) {
-	                if (!value) {
-	                    result = items;
-	                } else {
-	                    result = items.filter(function (item) {
-	                        return _this3.props.shouldItemRender(item, value);
-	                    });
-	                }
+	
+	                result = items.filter(function (item) {
+	                    return _this3.props.shouldItemRender(item, value);
+	                });
 	            }
 	            if (this.props.sortItems) {
 	                result.sort(function (a, b) {
