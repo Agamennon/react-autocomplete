@@ -107,6 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        focusOnCreate: React.PropTypes.any,
 	        shouldItemRender: React.PropTypes.func,
 	        renderItem: React.PropTypes.func.isRequired,
+	        openOnFocus: React.PropTypes.any,
 	        menuStyle: React.PropTypes.object,
 	        wrapperProps: React.PropTypes.object,
 	        wrapperStyle: React.PropTypes.object,
@@ -132,6 +133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            toUpperOnBlur: false,
 	            focusOnCreate: false,
 	            readOnly: false,
+	            openOnFocus: true,
 	            showChevron: true,
 	            onBlur: function onBlur() {},
 	            onChange: function onChange() {},
@@ -510,8 +512,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this._ignoreBlur) return;
 	        if (!this.state.isOpen) {
 	            var items = this.props.items || [];
+	
 	            this.setState({
-	                isOpen: true,
+	                isOpen: this.props.openOnFocus,
 	                items: items,
 	                itemsLength: items.length
 	            });
@@ -534,6 +537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ref: 'input',
 	            disabled: this.props.disabled,
 	            focusOnCreate: this.props.focusOnCreate,
+	            openOnFocus: this.props.openOnFocus,
 	            placeholder: this.props.placeholder,
 	            onFocus: this.handleInputFocus,
 	            onBlur: function onBlur(event) {
