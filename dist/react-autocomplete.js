@@ -316,7 +316,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            items = this.props.items;
 	        }
 	
-	        console.log('setting items to ', item);
 	        this.setState({
 	            items: items,
 	            item: null,
