@@ -242,7 +242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        if (this.props.items.length !== nextProps.items.length) {
 	            console.log('setting new items');
-	            var items = this.getFilteredItems(nextProps.items || [], this.props.findLabelFromValue(nextProps.value, this.props.items) || '');
+	            var items = this.getFilteredItems(nextProps.items || [], this.props.findLabelFromValue(nextProps.value, nextProps.items || []) || '');
 	            this.setState({
 	                items: items,
 	                item: null,
