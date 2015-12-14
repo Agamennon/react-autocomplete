@@ -316,9 +316,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            items = this.props.items;
 	        }
 	
+	        console.log('setting items to ', item);
 	        this.setState({
 	            items: items,
-	            item: item,
+	            item: null,
 	            itemsLength: items.length
 	        }, function () {
 	            _this.doNotEventBlur = false;
@@ -368,7 +369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.doNotEventBlur = true;
 	                var item = this.state.items[this.state.highlightedIndex];
 	                var value = this.props.getItemValue(item);
-	                this.refs.input.value = this.props.getItemValue(item);
+	
 	                // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
 	                this.setState({
 	                    isOpen: false,
@@ -376,6 +377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    item: item
 	                });
 	                if (item !== this.state.item) {
+	                    this.refs.input.value = this.props.getItemValue(item);
 	                    this.props.onSelect(value, item);
 	                }
 	            }
@@ -437,12 +439,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.doNotEventBlur = true;
 	        this._select = false;
 	        this.refs.input.focus();
-	        this.refs.input.value = this.props.getItemValue(item);
+	
 	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
 	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items);
 	
 	        //this.props.onSelect.bind(this,this.props.getItemValue(item), item)();
 	        if (item !== this.state.item) {
+	            this.refs.input.value = this.props.getItemValue(item);
 	            this.props.onSelect(this.props.getItemValue(item), item);
 	        }
 	
