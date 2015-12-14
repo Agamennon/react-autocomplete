@@ -187,6 +187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    getInitialState: function getInitialState() {
 	
+	        console.log('closing...');
 	        return {
 	            isOpen: false,
 	            highlightedIndex: null
@@ -267,6 +268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    handleKeyDown: function handleKeyDown(event) {
 	        if (this.keyDownHandlers[event.key]) this.keyDownHandlers[event.key].call(this, event);else {
+	            console.log('opening!');
 	            this.setState({
 	                highlightedIndex: null,
 	                isOpen: true
@@ -336,6 +338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	            var index = highlightedIndex === null || highlightedIndex === this.state.itemsLength - 1 ? 0 : highlightedIndex + 1;
 	
+	            console.log('opening!');
 	            this.setState({
 	                highlightedIndex: index,
 	                isOpen: true
@@ -343,11 +346,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 	
 	        ArrowUp: function ArrowUp(event) {
+	
 	            event.preventDefault();
 	            var highlightedIndex = this.state.highlightedIndex;
 	
 	            var index = highlightedIndex === 0 || highlightedIndex === null ? this.state.itemsLength - 1 : highlightedIndex - 1;
 	
+	            console.log('opening!!');
 	            this.setState({
 	                highlightedIndex: index,
 	                isOpen: true
@@ -357,11 +362,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        Enter: function Enter(event) {
 	            var _this2 = this;
 	
+	            event.preventDefault();
 	            if (this.state.isOpen === false) {
 	                // already selected this, do nothing
 	                return;
 	            } else if (this.state.highlightedIndex == null) {
 	                // hit enter after focus but before typing anything so no autocomplete attempt yet
+	                console.log('closing!');
 	                this.setState({
 	                    isOpen: false
 	                }, function () {
@@ -373,6 +380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var value = this.props.getItemValue(item);
 	
 	                // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
+	                console.log('closing');
 	                this.setState({
 	                    isOpen: false,
 	                    highlightedIndex: null,
@@ -386,6 +394,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 	
 	        Escape: function Escape(event) {
+	            event.preventDefault();
+	            console.log('closing!');
 	            this.setState({
 	                highlightedIndex: null,
 	                isOpen: false
@@ -419,10 +429,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    highlightItemFromMouse: function highlightItemFromMouse(index) {
+	        console.log('highlighting');
 	        this.setState({ highlightedIndex: index });
 	    },
 	
-	    selectItemFromMouse: function selectItemFromMouse(item) {
+	    selectItemFromMouse: function selectItemFromMouse(item, a, c) {
+	        console.log(item);
+	        console.log(a);
+	        console.log(c);
+	
 	        // this._updated = true;
 	
 	        /*  if (this.state.item === item) {
@@ -433,6 +448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          } else {
 	           }*/
 	        // console.log(item === this.state.item);
+	        console.log('closing!!!');
 	        this.setState({
 	            isOpen: false,
 	            highlightedIndex: null,
@@ -440,7 +456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        this.doNotEventBlur = true;
 	        this._select = false;
-	        this.refs.input.focus();
+	        //   this.refs.input.focus();
 	
 	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
 	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items);
@@ -521,12 +537,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    this.refs.input.value = '';
 	                }
 	            }
+	            console.log('closing!');
 	            this.setState({
 	                isOpen: false,
 	                highlightedIndex: null,
 	                item: comp
 	            });
 	        } else {
+	            console.log('closing!');
 	            this.setState({
 	                isOpen: false
 	            });
@@ -540,7 +558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this._ignoreBlur) return;
 	        if (!this.state.isOpen) {
 	            var items = this.props.items || [];
-	
+	            console.log('opening!');
 	            this.setState({
 	                isOpen: this.props.openOnFocus,
 	                items: items,
@@ -551,6 +569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    handleInputClick: function handleInputClick() {
 	        if (!this.state.isOpen) {
+	            console.log('opening!!!');
 	            this.setState({ isOpen: true });
 	        }
 	    },
