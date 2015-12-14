@@ -179,7 +179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                //  align:'center',
 	                //   width:'10px',
 	                //    height:'10px',
-	                zIndex: '2'
+	                zIndex: '1'
 	            }
 	
 	        };
@@ -241,9 +241,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //    this._updated = false;
 	
 	        if (this.props.items.length !== nextProps.items.length) {
-	            var items = this.getFilteredItems(nextProps.items || [], nextProps.value || '');
+	            console.log('setting new items');
+	            var items = this.getFilteredItems(nextProps.items || [], this.props.findLabelFromValue(nextProps.value, this.props.items) || '');
 	            this.setState({
 	                items: items,
+	                item: null,
 	                itemsLength: items.length
 	            });
 	        }
