@@ -60,19 +60,39 @@ export default class App extends React.Component {
 
     constructor(){
         super();
+
+        var options = [
+            {
+                label:'banana',
+                value:'111'
+            },
+            {
+                label:'pera',
+                value:'222'
+            },
+            {
+                label:'uva',
+                value:'333'
+            }
+        ];
         this.state ={
-            items:getStates(),
-           value:'333'
+            //items:getStates()
+            items:options
+        //   value:'333'
         };
     }
 
     click(event) {
-        var data = getStates();
-       var half_length = Math.ceil(data.length / 2);
+      //  var data = getStates();
+     //  var half_length = Math.ceil(data.length / 2);
 
-        var leftSide = data.splice(0,10);
-        this.refs.gui.setFocus();
-    /*    this.setState({
+//        var leftSide = data.splice(0,10);
+       // this.refs.gui.setFocus();
+        this.state.items.push({
+            label:'novo',
+            value:'444'
+        });
+        /*this.setState({
         //    items:leftSide,
             value:'111'
         });*/
@@ -160,15 +180,16 @@ export default class App extends React.Component {
         console.log('item',item);
     }
 
-    onSelect(value,item,a){
+    onSelect(value,item){
       //  this.value = 'merda'
-      /*  console.log(value)
-        console.log(item)
-        console.log(a)*/
-      /*  this.setState({
-            value:'buga'
-        });*/
-        //this.forceUpdate()
+        console.log('value',value);
+        console.log('item',item);
+
+
+        this.setState({
+            value:item.value
+        });
+     //   this.forceUpdate()
 
    }
 
@@ -179,20 +200,6 @@ export default class App extends React.Component {
 
 
 
-        var options = [
-            {
-             label:'banana',
-             value:'111'
-            },
-            {
-             label:'pera',
-             value:'222'
-            },
-            {
-             label:'uva',
-             value:'333'
-            }
-        ];
 
 
 
@@ -239,11 +246,11 @@ export default class App extends React.Component {
                     isLoading={false}
                     onChange={this.onChange.bind(this)}
                     onBlur={this.onBlur.bind(this)}
-                    exact={true}
+                    exact={false}
                     toUpperOnBlur={true}
                     placeholder='haha'
                     focusOnCreate={false}
-                    onSelect={this.onSelect.bind(this,{'a':'yehue'})}
+                    onSelect={this.onSelect.bind(this)}
                     items={this.state.items}
                     findObject={this.findObject.bind(this)}
                     findLabelFromValue={this.findLabelFromValue.bind(this)}
