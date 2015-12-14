@@ -241,7 +241,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //    this._updated = false;
 	
 	        if (this.props.items.length !== nextProps.items.length) {
-	            console.log('setting new items');
+	
 	            var items = this.getFilteredItems(nextProps.items || [], this.props.findLabelFromValue(nextProps.value, nextProps.items || []) || '');
 	            this.refs.input.value = this.props.findLabelFromValue(nextProps.value, items) || '';
 	            this.setState({
