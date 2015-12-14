@@ -318,6 +318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        this.setState({
 	            items: items,
+	            item: item,
 	            itemsLength: items.length
 	        }, function () {
 	            _this.doNotEventBlur = false;
@@ -364,15 +365,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    _this2.refs.input.select();
 	                });
 	            } else {
+	                this.doNotEventBlur = true;
 	                var item = this.state.items[this.state.highlightedIndex];
 	                var value = this.props.getItemValue(item);
-	                //this.refs.input.value = this.props.getItemValue(item);
-	                this.refs.input.value = this.props.findLabelFromValue(this.props.getItemValue(item), this.props.items);
+	                this.refs.input.value = this.props.getItemValue(item);
+	                // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
 	                this.setState({
 	                    isOpen: false,
-	                    highlightedIndex: null
+	                    highlightedIndex: null,
+	                    item: item
 	                });
-	                this.props.onSelect(value, item);
+	                if (item !== this.state.item) {
+	                    this.props.onSelect(value, item);
+	                }
 	            }
 	        },
 	
@@ -414,26 +419,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    selectItemFromMouse: function selectItemFromMouse(item) {
-	        var _this4 = this;
-	
 	        // this._updated = true;
+	
+	        /*  if (this.state.item === item) {
+	              this.setState({
+	                  isOpen: false,
+	                  highlightedIndex: null
+	              });
+	          } else {
+	           }*/
+	        // console.log(item === this.state.item);
 	        this.setState({
 	            isOpen: false,
 	            highlightedIndex: null,
-	
 	            item: item
-	        }, function () {
-	            _this4._select = false;
-	            _this4.refs.input.focus();
-	            _this4.refs.input.value = _this4.props.getItemValue(item);
-	            // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items);
-	
-	            //this.props.onSelect.bind(this,this.props.getItemValue(item), item)();
-	            _this4.props.onSelect(_this4.props.getItemValue(item), item);
-	
-	            _this4.setIgnoreBlur(false);
-	            _this4.doNotEventBlur = true;
 	        });
+	        this.doNotEventBlur = true;
+	        this._select = false;
+	        this.refs.input.focus();
+	        this.refs.input.value = this.props.getItemValue(item);
+	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items) ;
+	        // this.refs.input.value =  this.props.findLabelFromValue(this.props.getItemValue(item),this.props.items);
+	
+	        //this.props.onSelect.bind(this,this.props.getItemValue(item), item)();
+	        if (item !== this.state.item) {
+	            this.props.onSelect(this.props.getItemValue(item), item);
+	        }
+	
+	        this.setIgnoreBlur(false);
 	    },
 	
 	    setIgnoreBlur: function setIgnoreBlur(ignore) {
@@ -441,19 +454,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    renderMenu: function renderMenu() {
-	        var _this5 = this;
+	        var _this4 = this;
 	
 	        var items = this.state.items.map(function (item, index) {
-	            var element = _this5.props.renderItem(item, _this5.state.highlightedIndex === index, { cursor: 'default' });
+	            var element = _this4.props.renderItem(item, _this4.state.highlightedIndex === index, { cursor: 'default' });
 	            return React.cloneElement(element, {
 	                onMouseDown: function onMouseDown() {
-	                    return _this5.setIgnoreBlur(true);
+	                    return _this4.setIgnoreBlur(true);
 	                },
 	                onMouseEnter: function onMouseEnter() {
-	                    return _this5.highlightItemFromMouse(index);
+	                    return _this4.highlightItemFromMouse(index);
 	                },
 	                onClick: function onClick() {
-	                    return _this5.selectItemFromMouse(item);
+	                    return _this4.selectItemFromMouse(item);
 	                },
 	                ref: 'item-' + index
 	            });
@@ -538,7 +551,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	
 	    render: function render() {
-	        var _this6 = this;
+	        var _this5 = this;
 	
 	        return React.createElement('div', _extends({}, this.props.wrapperProps, { style: _extends({}, this.props.wrapperStyle) }), React.createElement('input', _extends({}, this.props.inputProps, {
 	            //  selectValue={this.props.value}
@@ -551,13 +564,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            placeholder: this.props.placeholder,
 	            onFocus: this.handleInputFocus,
 	            onBlur: function onBlur(event) {
-	                return _this6.handleInputBlur(event);
+	                return _this5.handleInputBlur(event);
 	            },
 	            onChange: function onChange(event) {
-	                return _this6.handleChange(event);
+	                return _this5.handleChange(event);
 	            },
 	            onKeyDown: function onKeyDown(event) {
-	                return _this6.handleKeyDown(event);
+	                return _this5.handleKeyDown(event);
 	            },
 	            onClick: this.handleInputClick
 	
